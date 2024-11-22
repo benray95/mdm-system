@@ -8,7 +8,8 @@ public class Device {
     private String model;
     private String osVersion;
     private LocalDateTime lastCheckin;
-    
+    private DeviceStatus status;
+
     // Getters et Setters
     public String getImei() {
         return imei;
@@ -49,5 +50,19 @@ public class Device {
     public void setLastCheckin(LocalDateTime lastCheckin) {
         this.lastCheckin = lastCheckin;
     }
-}
+
+    public DeviceStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DeviceStatus status) {
+        this.status = status;
+    }
+
+    // Enum pour le statut de l'appareil
+    public enum DeviceStatus {
+        ACTIVE,
+        INACTIVE,
+        LOST
+    }
 }

@@ -1,14 +1,11 @@
 package com.mdm.model;
 
-import java.time.LocalDateTime;
-
-public class Device {
+public class EnrollmentRequest {
     private String imei;
     private String brand;
     private String model;
     private String osVersion;
-    private LocalDateTime lastCheckin;
-    
+
     // Getters et Setters
     public String getImei() {
         return imei;
@@ -41,13 +38,4 @@ public class Device {
     public void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
     }
-
-    public LocalDateTime getLastCheckin() {
-        return lastCheckin;
-    }
-
-    public void setLastCheckin(LocalDateTime lastCheckin) {
-        this.lastCheckin = lastCheckin;
-    }
-}
 }

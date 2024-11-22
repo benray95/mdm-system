@@ -1,12 +1,21 @@
 package com.mdm.model;
 
 public class EnrollmentRequest {
+    private String enrollmentCode; // Code d'enrôlement
     private String imei;
     private String brand;
     private String model;
     private String osVersion;
 
     // Getters et Setters
+    public String getEnrollmentCode() {
+        return enrollmentCode;
+    }
+
+    public void setEnrollmentCode(String enrollmentCode) {
+        this.enrollmentCode = enrollmentCode;
+    }
+
     public String getImei() {
         return imei;
     }

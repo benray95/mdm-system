@@ -11,78 +11,32 @@ public class Device {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    private String deviceId; // Correspond au champ device_id dans SQL
+
+    @Column(unique = true, nullable = false)
     private String imei;
 
+    @Column(nullable = false)
     private String brand;
+
+    @Column(nullable = false)
     private String model;
+
+    @Column(name = "os_version", nullable = false)
     private String osVersion;
 
-    @Column(name = "last_checkin")
+    @Column(name = "last_checkin", nullable = false)
     private LocalDateTime lastCheckin;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private DeviceStatus status;
-
-    // Getters et Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getImei() {
-        return imei;
-    }
-
-    public void setImei(String imei) {
-        this.imei = imei;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getOsVersion() {
-        return osVersion;
-    }
-
-    public void setOsVersion(String osVersion) {
-        this.osVersion = osVersion;
-    }
-
-    public LocalDateTime getLastCheckin() {
-        return lastCheckin;
-    }
-
-    public void setLastCheckin(LocalDateTime lastCheckin) {
-        this.lastCheckin = lastCheckin;
-    }
-
-    public DeviceStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DeviceStatus status) {
-        this.status = status;
-    }
 
     public enum DeviceStatus {
         ACTIVE,
         INACTIVE,
         LOST
     }
+
+    // Getters et Setters
 }

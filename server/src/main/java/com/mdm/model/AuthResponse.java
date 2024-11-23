@@ -8,4 +8,7 @@ public class AuthResponse {
     }
 
     // Getter
+    public String getToken() {
+        return token;
+    }
 }

@@ -1,7 +1,6 @@
 package com.mdm.model;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -22,14 +21,6 @@ public class User {
 
     @Column(nullable = false)
     private String role; // Par exemple, "ADMIN" ou "USER"
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt; // Champ pour la date de création
-
-    // Constructeur par défaut
-    public User() {
-        this.createdAt = LocalDateTime.now(); // Initialisation à la date actuelle
-    }
 
     // Getters et Setters
 
@@ -72,10 +63,4 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    // Pas de setter pour createdAt pour éviter les modifications après création
 }

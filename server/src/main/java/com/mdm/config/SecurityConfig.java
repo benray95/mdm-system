@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;  // Ajouté pour résoudre l'erreur de nom de type
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -17,7 +19,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                // Autoriser l'accès aux ressources statiques (fichiers HTML, CSS, JS)
                 .antMatchers("/frontend/**").permitAll()  // Permet l'accès à /frontend/ sans authentification
                 .antMatchers("/login", "/signup").permitAll()  // Autorise l'accès à la page de connexion et d'inscription
                 .anyRequest().authenticated()  // Toute autre demande nécessite une authentification
@@ -34,13 +35,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // Ignore la sécurité pour les fichiers dans le répertoire frontend
         web.ignoring().antMatchers("/frontend/**");
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Utilise BCrypt pour encoder les mots de passe
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();  // Utilise BCrypt pour encoder les mots de passe
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();  // Définir un bean pour AuthenticationManager
     }
 }

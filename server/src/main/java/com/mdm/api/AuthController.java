@@ -1,36 +1,41 @@
 package com.mdm.api;
 
-import com.mdm.model.AuthRequest;
-import com.mdm.model.AuthResponse;
-import com.mdm.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
+        // Logique pour enregistrer l'utilisateur
+        System.out.println("Received signup request: " + signupRequest);
 
-    @Autowired
-    private UserService userService;
+        // Simuler une sauvegarde réussie
+        return ResponseEntity.ok("User registered successfully!");
+    }
+}
 
-    // Endpoint pour l'authentification de l'utilisateur
-    @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-        );
+// DTO pour recevoir les données du formulaire
+class SignupRequest {
+    private String username;
+    private String password;
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    // Getters et setters
+    public String getUsername() {
+        return username;
+    }
 
-        // Vous pouvez ajouter un JWT ici pour la session de l'utilisateur
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        return new AuthResponse("Token de connexion");
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

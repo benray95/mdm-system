@@ -1,24 +1,22 @@
 package com.mdm.api;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Map;
-
-@RestController
-@RequestMapping("/api/auth")
+@Controller
 public class AuthController {
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestParam Map<String, String> params) {
-        // Récupérer les données envoyées par le formulaire
-        String username = params.get("username");
-        String password = params.get("password");
-
-        // Ajouter votre logique de validation et de sauvegarde ici
-        System.out.println("Signup Request - Username: " + username + ", Password: " + password);
-
-        // Simuler une sauvegarde réussie
-        return ResponseEntity.ok("User registered successfully!");
+    // Redirection vers la page statique de login
+    @GetMapping("/login")
+    public String login() {
+        return "redirect:/frontend/login.html";
     }
+
+    // Redirection vers la page signup
+    @GetMapping("/signup")
+    public String signup() {
+        return "redirect:/frontend/signup.html";
+    }
+
+    // Ajoute d'autres endpoints si nécessaire
 }

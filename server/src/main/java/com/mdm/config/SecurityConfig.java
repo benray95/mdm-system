@@ -17,23 +17,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/login", "/signup", "/frontend/**", "/api/auth/signup").permitAll() // Permissions
-                .anyRequest().authenticated()
-            .and()
-            .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/frontend/index.html")
-                .permitAll()
-            .and()
-            .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
-                .permitAll();
+                .antMatchers("/frontend/**", "/login", "/signup").permitAll() // Permet l'accès aux fichiers statiques
+                .anyRequest().authenticated();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configuration du gestionnaire d'authentification (ex: UserDetailsService)
+        // Ajouter la configuration de gestion de l'authentification si nécessaire
     }
 
     @Bean

@@ -2,11 +2,12 @@ package com.mdm.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -15,20 +16,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/login", "/signup", "/enroll").permitAll() // Modifier selon tes besoins
-                .anyRequest().authenticated();
+                // Autoriser l'accès aux ressources statiques (fichiers HTML, CSS, JS)
+                .antMatchers("/frontend/**").permitAll()  // Permet l'accès à /frontend/ sans authentification
+                .antMatchers("/login", "/signup").permitAll()  // Autorise l'accès à la page de connexion et d'inscription
+                .anyRequest().authenticated()  // Toute autre demande nécessite une authentification
+            .and()
+            .formLogin()
+                .loginPage("/login")  // Page de login personnalisée
+                .permitAll()  // Permet l'accès à la page de login sans authentification
+            .and()
+            .logout()
+                .permitAll()  // Permet l'accès à la page de logout
+            .and()
+            .csrf().disable();  // Désactive la protection CSRF (si nécessaire pour les APIs)
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configure ton gestionnaire d'authentification ici (par exemple, en utilisant un UserDetailsService)
+    public void configure(WebSecurity web) throws Exception {
+        // Ignore la sécurité pour les fichiers dans le répertoire frontend
+        web.ignoring().antMatchers("/frontend/**");
     }
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public PasswordEncoder passwordEncoder() {
+        // Utilise BCrypt pour encoder les mots de passe
+        return new BCryptPasswordEncoder();
     }
 }

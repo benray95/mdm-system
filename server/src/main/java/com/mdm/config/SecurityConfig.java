@@ -17,13 +17,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/login", "/signup", "/enroll").permitAll() // Modifier selon tes besoins
-                .anyRequest().authenticated();
+                .antMatchers("/login", "/signup", "/enroll", "/frontend/**").permitAll() // Permettre l'accès à /frontend
+                .anyRequest().authenticated()
+            .and()
+            .formLogin()
+                .loginPage("/login") // URL de la page de connexion
+                .defaultSuccessUrl("/frontend/index.html") // Rediriger après connexion réussie
+                .permitAll()
+            .and()
+            .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout") // Rediriger après déconnexion
+                .permitAll();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configure ton gestionnaire d'authentification ici (par exemple, en utilisant un UserDetailsService)
+        // Exemple : configuration d'un utilisateur en mémoire (remplace-le par ton UserDetailsService)
+        auth.inMemoryAuthentication()
+            .withUser("admin")
+            .password("{noop}password") // Remplace {noop} par un encodeur comme BCrypt pour un projet en production
+            .roles("USER");
     }
 
     @Bean

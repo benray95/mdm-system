@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Ajouter la bibliothèque pour scanner le QR code -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Enrollment</h1>
+        <!-- Formulaire d'enrôlement -->
+        <form action="/api/devices/enroll" method="POST" id="enrollForm">
+            <div class="form-group">
+                <label for="qrCode">QR Code</label>
+                <input type="file" id="qrCode" name="qrCode" accept="image/*" onchange="scanQRCode(event)" required>
+                <p id="qrCodeError" style="color: red; display: none;">QR Code non valide.</p>
+            </div>
+            <div class="form-group">
+                <label for="deviceId">Device ID</label>
+                <input type="text" id="deviceId" name="deviceId" required>
+            </div>
+            <div class="form-group">
+                <label for="imei">IMEI</label>
+                <input type="text" id="imei" name="imei" required>
+            </div>
+            <div class="form-group">
+                <label for="brand">Brand</label>
+                <input type="text" id="brand" name="brand" required>
+            </div>
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+            <div class="form-group">
+                <label for="osVersion">OS Version</label>
+                <input type="text" id="osVersion" name="osVersion" required>
+            </div>
+            <div class="form-group">
+                <label for="lastCheckin">Last Check-In</label>
+                <input type="datetime-local" id="lastCheckin" name="lastCheckin" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status" required>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="lost">Lost</option>
+                </select>
+            </div>
+            <button type="submit">Enroll Device</button>
+        </form>
+    </div>
+
+    <script>
+        // Fonction pour scanner le QR code
+        function scanQRCode(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        context.drawImage(img, 0, 0, img.width, img.height);
+                        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                        const qrCodeData = jsQR(imageData.data, canvas.width, canvas.height);
+                        
+                        if (qrCodeData) {
+                            // Si un QR code est trouvé, on remplit le champ deviceId
+                            document.getElementById('deviceId').value = qrCodeData.data;
+                            document.getElementById('qrCodeError').style.display = 'none';
+                        } else {
+                            document.getElementById('qrCodeError').style.display = 'block';
+                        }
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -5,11 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -18,34 +17,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+            .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/frontend/**").permitAll()  // Permet l'accès à /frontend/ sans authentification
-                .antMatchers("/login", "/signup").permitAll()  // Autorise l'accès à la page de connexion et d'inscription
-                .anyRequest().authenticated()  // Toute autre demande nécessite une authentification
+                .antMatchers("/frontend/**").authenticated() // Autoriser l'accès à /frontend uniquement si authentifié
+                .antMatchers("/login", "/signup", "/public/**").permitAll() // Autoriser les pages publiques
+                .anyRequest().authenticated() // Toute autre page nécessite une authentification
             .and()
             .formLogin()
-                .loginPage("/login")  // Page de login personnalisée
-                .permitAll()  // Permet l'accès à la page de login sans authentification
+                .loginPage("/login") // Page de connexion personnalisée
+                .permitAll() // Autoriser l'accès à la page de connexion
+                .defaultSuccessUrl("/frontend", true) // Rediriger vers /frontend après une connexion réussie
             .and()
             .logout()
-                .permitAll()  // Permet l'accès à la page de logout
-            .and()
-            .csrf().disable();  // Désactive la protection CSRF (si nécessaire pour les APIs)
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/frontend/**");
+                .permitAll();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // Utilise BCrypt pour encoder les mots de passe
-    }
-
     @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();  // Définir un bean pour AuthenticationManager
+    public UserDetailsService userDetailsService() {
+        // Créer un utilisateur en mémoire (modifie cette partie pour un user service si nécessaire)
+        return new InMemoryUserDetailsManager(
+            User.withUsername("admin")
+                .password("{noop}password") // Le préfixe {noop} indique que le mot de passe est en texte clair
+                .roles("USER")
+                .build()
+        );
     }
 }

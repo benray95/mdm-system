@@ -1,1 +1,0 @@
-mysql -u root -p < mdm-system/scripts/setup_database.sql
